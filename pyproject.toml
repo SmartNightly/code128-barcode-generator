@@ -14,7 +14,7 @@ dependencies = []
 
 [project.scripts]
 generate-barcode = "barcode_generator.cli:main"
+generate-barcode-from-date = "barcode_generator.date_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

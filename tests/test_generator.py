@@ -1,7 +1,9 @@
 import tempfile
 import unittest
+from datetime import date
 from pathlib import Path
 
+from barcode_generator.date_cli import date_to_production_day, parse_date
 from barcode_generator.generator import (
     build_payload,
     calculate_luhn_check_digit,
@@ -23,6 +25,18 @@ class LuhnTests(unittest.TestCase):
     def test_rejects_invalid_field_length(self) -> None:
         with self.assertRaisesRegex(ValueError, "exactly 5"):
             build_payload("127")
+
+
+class DateTests(unittest.TestCase):
+    def test_date_becomes_two_digit_year_and_day_of_year(self) -> None:
+        self.assertEqual(date_to_production_day(date(2026, 5, 7)), "26127")
+
+    def test_leap_year_is_respected(self) -> None:
+        self.assertEqual(date_to_production_day(date(2024, 12, 31)), "24366")
+
+    def test_invalid_calendar_date_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):
+            parse_date("2026-02-30")
 
 
 class BarcodeTests(unittest.TestCase):

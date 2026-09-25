@@ -79,6 +79,40 @@ Das SVG nutzt Code 128-C, da der Payload ausschließlich aus einer geraden
 Anzahl von Ziffern besteht. Der Encoder, die Luhn-Berechnung und die
 SVG-Erzeugung verwenden nur die Python-Standardbibliothek.
 
+## Barcode aus einem Kalenderdatum erzeugen
+
+Das interaktive Skript fragt nach einem Datum und speichert den Barcode als
+`barcode.svg`:
+
+```bash
+PYTHONPATH=src python3 generate_from_date.py
+```
+
+Beispiel:
+
+```text
+Datum eingeben (JJJJ-MM-TT): 2026-05-07
+Produktionstag: 26127
+Payload: 22972261270181555555555668822557
+Code-128-Barcode gespeichert: barcode.svg
+```
+
+Das Datum wird als `JJTTT` codiert: die letzten beiden Stellen des Jahres plus
+der dreistellige Tag des Jahres. Daher wird `2026-05-07`, der 127. Tag des
+Jahres, zu `26127`. Schaltjahre werden automatisch berücksichtigt.
+
+Das Datum kann auch direkt übergeben und ein anderer Dateiname gewählt werden:
+
+```bash
+PYTHONPATH=src python3 generate_from_date.py 2026-05-07 -o barcode-2026-05-07.svg
+```
+
+Nach einer lokalen Installation steht derselbe Ablauf als Befehl zur Verfügung:
+
+```bash
+generate-barcode-from-date
+```
+
 ## Tests
 
 ```bash
@@ -86,8 +120,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
 Die Tests prüfen unter anderem ein unabhängiges bekanntes Luhn-Beispiel, beide
-bekannten Produktionstage, Eingabevalidierung, die Code-128-Prüfsumme und die
-SVG-Ausgabe.
+bekannten Produktionstage, die Kalenderdatumsumwandlung einschließlich
+Schaltjahr, Eingabevalidierung, die Code-128-Prüfsumme und die SVG-Ausgabe.
 
 ## Lizenz
 
