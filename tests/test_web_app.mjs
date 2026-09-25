@@ -43,5 +43,12 @@ test("encodes the Code 128 checksum and a complete SVG", () => {
 test("keeps the native date field inside its mobile grid", async () => {
   const css = await readFile(new URL("../docs/styles.css", import.meta.url), "utf8");
   assert.match(css, /\.date-row\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
-  assert.match(css, /input\[type="date"\]\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/s);
+  assert.match(css, /input\[type="date"\]\s*\{[^}]*width:\s*auto[^}]*justify-self:\s*stretch[^}]*max-width:\s*100%/s);
+  assert.match(css, /input\[type="date"\]\s*\{[^}]*-webkit-appearance:\s*none[^}]*overflow:\s*hidden/s);
+});
+
+test("loads fresh web assets before using the offline cache", async () => {
+  const serviceWorker = await readFile(new URL("../docs/sw.js", import.meta.url), "utf8");
+  assert.match(serviceWorker, /networkFirst\(event\.request\)/);
+  assert.match(serviceWorker, /fetch\(request, \{ cache: "no-cache" \}\)/);
 });

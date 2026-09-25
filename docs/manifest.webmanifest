@@ -3,7 +3,7 @@
   "short_name": "Barcode",
   "description": "Erzeugt einen Code-128-Barcode aus einem Ablaufdatum.",
   "lang": "de",
-  "start_url": "./",
+  "start_url": "./?v=4",
   "display": "standalone",
   "background_color": "#eaf0f4",
   "theme_color": "#143c63",
