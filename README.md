@@ -79,10 +79,10 @@ Das SVG nutzt Code 128-C, da der Payload ausschließlich aus einer geraden
 Anzahl von Ziffern besteht. Der Encoder, die Luhn-Berechnung und die
 SVG-Erzeugung verwenden nur die Python-Standardbibliothek.
 
-## Barcode aus einem Kalenderdatum erzeugen
+## Barcode aus einem Altersdatum erzeugen
 
-Das interaktive Skript fragt nach einem Datum und speichert den Barcode als
-`barcode.svg`:
+Das interaktive Skript fragt nach dem Alters-/Bezugsdatum. Davon zieht es die im
+Feld `0181` codierten 181 Tage ab und speichert den Barcode als `barcode.svg`:
 
 ```bash
 PYTHONPATH=src python3 generate_from_date.py
@@ -91,15 +91,18 @@ PYTHONPATH=src python3 generate_from_date.py
 Beispiel:
 
 ```text
-Datum eingeben (JJJJ-MM-TT): 2026-05-07
-Produktionstag: 26127
-Payload: 22972261270181555555555668822557
+Altersdatum eingeben (JJJJ-MM-TT): 2026-05-07
+Produktionsdatum: 2025-11-07 (-181 Tage)
+Produktionstag: 25311
+Payload: 22972253110181555555555668822555
 Code-128-Barcode gespeichert: barcode.svg
 ```
 
-Das Datum wird als `JJTTT` codiert: die letzten beiden Stellen des Jahres plus
-der dreistellige Tag des Jahres. Daher wird `2026-05-07`, der 127. Tag des
-Jahres, zu `26127`. Schaltjahre werden automatisch berücksichtigt.
+Im Beispiel ergibt `2026-05-07` minus 181 Tage das Produktionsdatum
+`2025-11-07`. Dieses wird als `JJTTT` codiert: die letzten beiden Stellen des
+Jahres plus der dreistellige Tag des Jahres. Der 7. November ist der 311. Tag
+des Jahres, daher lautet das Feld `25311`. Schaltjahre und Jahreswechsel werden
+automatisch berücksichtigt.
 
 Das Datum kann auch direkt übergeben und ein anderer Dateiname gewählt werden:
 
@@ -120,8 +123,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
 Die Tests prüfen unter anderem ein unabhängiges bekanntes Luhn-Beispiel, beide
-bekannten Produktionstage, die Kalenderdatumsumwandlung einschließlich
-Schaltjahr, Eingabevalidierung, die Code-128-Prüfsumme und die SVG-Ausgabe.
+bekannten Produktionstage, den Abzug der 181 Tage, Jahreswechsel und Schaltjahr,
+Eingabevalidierung, die Code-128-Prüfsumme und die SVG-Ausgabe.
 
 ## Lizenz
 

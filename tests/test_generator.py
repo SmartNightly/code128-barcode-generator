@@ -3,7 +3,12 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from barcode_generator.date_cli import date_to_production_day, parse_date
+from barcode_generator.date_cli import (
+    calculate_production_date,
+    date_to_production_day,
+    encode_production_day,
+    parse_date,
+)
 from barcode_generator.generator import (
     build_payload,
     calculate_luhn_check_digit,
@@ -28,11 +33,20 @@ class LuhnTests(unittest.TestCase):
 
 
 class DateTests(unittest.TestCase):
-    def test_date_becomes_two_digit_year_and_day_of_year(self) -> None:
-        self.assertEqual(date_to_production_day(date(2026, 5, 7)), "26127")
+    def test_age_days_are_subtracted_before_encoding(self) -> None:
+        age_date = date(2026, 5, 7)
+        self.assertEqual(calculate_production_date(age_date), date(2025, 11, 7))
+        self.assertEqual(date_to_production_day(age_date), "25311")
 
-    def test_leap_year_is_respected(self) -> None:
-        self.assertEqual(date_to_production_day(date(2024, 12, 31)), "24366")
+    def test_leap_year_is_respected_when_encoding(self) -> None:
+        self.assertEqual(encode_production_day(date(2024, 12, 31)), "24366")
+
+    def test_subtraction_can_cross_a_year_boundary(self) -> None:
+        self.assertEqual(calculate_production_date(date(2025, 1, 1)), date(2024, 7, 4))
+
+    def test_negative_age_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "must not be negative"):
+            calculate_production_date(date(2026, 5, 7), -1)
 
     def test_invalid_calendar_date_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):
