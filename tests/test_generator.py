@@ -2,11 +2,13 @@ import tempfile
 import unittest
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from barcode_generator.date_cli import (
     calculate_production_date,
     date_to_production_day,
     encode_production_day,
+    open_output_directory,
     parse_date,
     write_html_preview,
 )
@@ -58,6 +60,19 @@ class DateTests(unittest.TestCase):
         self.assertEqual(html.name, "barcode mit leerzeichen.html")
         self.assertIn('href="barcode%20mit%20leerzeichen.svg"', document)
         self.assertIn("12345", document)
+
+    @patch("barcode_generator.date_cli.subprocess.run")
+    @patch("barcode_generator.date_cli.sys.platform", "darwin")
+    def test_output_directory_opens_in_finder(self, run) -> None:
+        output = Path("example/barcode.html")
+        self.assertTrue(open_output_directory(output))
+        run.assert_called_once_with(["open", str(output.resolve().parent)], check=True)
+
+    @patch("barcode_generator.date_cli.subprocess.run")
+    @patch("barcode_generator.date_cli.sys.platform", "linux")
+    def test_output_directory_is_not_opened_on_other_systems(self, run) -> None:
+        self.assertFalse(open_output_directory("barcode.html"))
+        run.assert_not_called()
 
     def test_invalid_calendar_date_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):

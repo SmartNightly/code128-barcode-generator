@@ -109,7 +109,15 @@ Zusätzlich zum SVG erzeugt das Skript eine gleichnamige HTML-Datei. Sie enthäl
 eine Barcode-Vorschau sowie klickbare Links zum Öffnen und Herunterladen der
 SVG-Datei. Die ausgegebene absolute `file://`-Adresse ist in unterstützten
 Terminals direkt anklickbar; andernfalls kann `barcode.html` im Browser geöffnet
-werden.
+werden. Unter macOS öffnet das Skript anschließend automatisch den Finder im
+Ausgabeordner.
+
+Soll der Finder beispielsweise bei automatisierter Ausführung geschlossen
+bleiben, kann das Öffnen deaktiviert werden:
+
+```bash
+PYTHONPATH=src python3 generate_from_date.py 2026-05-07 --no-open
+```
 
 Das Datum kann auch direkt übergeben und ein anderer Dateiname gewählt werden:
 

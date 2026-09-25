@@ -4,6 +4,8 @@ import argparse
 from datetime import date, timedelta
 from html import escape
 from pathlib import Path
+import subprocess
+import sys
 from urllib.parse import quote
 
 from .generator import build_payload, render_code128_svg
@@ -65,6 +67,15 @@ def write_html_preview(svg_path: str | Path, payload: str) -> Path:
     return html_path
 
 
+def open_output_directory(output_path: str | Path) -> bool:
+    """Open the output directory in Finder on macOS."""
+    if sys.platform != "darwin":
+        return False
+    directory = Path(output_path).resolve().parent
+    subprocess.run(["open", str(directory)], check=True)
+    return True
+
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Generate the Code 128 barcode by subtracting 181 age days from a calendar date."
@@ -79,6 +90,11 @@ def create_parser() -> argparse.ArgumentParser:
         "--output",
         default="barcode.svg",
         help="SVG output path (default: barcode.svg)",
+    )
+    parser.add_argument(
+        "--no-open",
+        action="store_true",
+        help="do not open the output directory in Finder",
     )
     return parser
 
@@ -101,6 +117,12 @@ def main() -> None:
     print(f"Payload: {payload}")
     print(f"Code-128-Barcode gespeichert: {output}")
     print(f"Klickbare HTML-Seite: {html_output.as_uri()}")
+    if not args.no_open:
+        try:
+            if open_output_directory(html_output):
+                print(f"Finder geöffnet: {html_output.parent}")
+        except subprocess.CalledProcessError as error:
+            print(f"Hinweis: Finder konnte nicht geöffnet werden ({error}).", file=sys.stderr)
 
 
 if __name__ == "__main__":
