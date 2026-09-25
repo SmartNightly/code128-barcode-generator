@@ -1,0 +1,239 @@
+:root {
+  color-scheme: light;
+  --ink: #102638;
+  --muted: #587083;
+  --blue: #143c63;
+  --blue-strong: #0c2c4b;
+  --paper: #ffffff;
+  --ground: #eaf0f4;
+  --line: #c7d3dc;
+  --signal: #e9b949;
+  --error: #a52a2a;
+  font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--blue); }
+
+body {
+  min-height: 100svh;
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(var(--blue) 0 11.5rem, var(--ground) 11.5rem 100%);
+}
+
+button, input { font: inherit; }
+
+button { -webkit-tap-highlight-color: transparent; }
+
+.app-shell {
+  width: min(100%, 46rem);
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 7.5rem;
+  color: white;
+}
+
+.app-header h1 {
+  margin: 0 0 .35rem;
+  font-size: clamp(1.65rem, 7vw, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+
+.app-header p {
+  max-width: 32rem;
+  margin: 0;
+  color: #d9e6ef;
+  font-size: .98rem;
+  line-height: 1.35;
+}
+
+.mark {
+  display: flex;
+  align-items: stretch;
+  gap: .18rem;
+  width: 2.7rem;
+  height: 3.2rem;
+  padding: .5rem;
+  flex: 0 0 auto;
+  background: var(--paper);
+  border-radius: .5rem;
+  box-shadow: 0 .4rem 1.4rem rgb(0 0 0 / 18%);
+}
+
+.mark span { background: var(--blue); }
+.mark span:nth-child(1) { width: .16rem; }
+.mark span:nth-child(2) { width: .34rem; }
+.mark span:nth-child(3) { width: .12rem; }
+.mark span:nth-child(4) { width: .27rem; }
+
+.input-panel,
+.result,
+.info {
+  background: var(--paper);
+  border: 1px solid rgb(16 38 56 / 8%);
+  box-shadow: 0 .9rem 2.5rem rgb(25 55 77 / 10%);
+}
+
+.input-panel {
+  padding: 1.2rem;
+  border-radius: 1rem;
+}
+
+.input-panel label {
+  display: block;
+  margin-bottom: .6rem;
+  font-size: .92rem;
+  font-weight: 700;
+}
+
+.date-row { display: grid; gap: .7rem; }
+
+input[type="date"] {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: .65rem .8rem;
+  border: 1.5px solid var(--line);
+  border-radius: .65rem;
+  color: var(--ink);
+  background: #f9fbfc;
+  font-size: 1.05rem;
+}
+
+button {
+  min-height: 3.25rem;
+  padding: .75rem 1rem;
+  border: 0;
+  border-radius: .65rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+#generate,
+.primary-action {
+  color: white;
+  background: var(--blue);
+}
+
+#generate:active,
+.primary-action:active { background: var(--blue-strong); }
+
+input:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.error {
+  margin: .75rem 0 0;
+  color: var(--error);
+  font-weight: 650;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 1.2rem;
+  border-radius: 1rem;
+}
+
+.result-heading {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.result-heading div { min-width: 0; }
+
+.result-label {
+  display: block;
+  margin-bottom: .25rem;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.result-heading strong { font-size: 1.05rem; }
+
+.barcode {
+  margin: 1rem -.35rem .7rem;
+  padding: 1rem .35rem .7rem;
+  overflow-x: auto;
+  background: white;
+  border-radius: .45rem;
+}
+
+.barcode svg {
+  display: block;
+  width: 100%;
+  min-width: 32rem;
+  height: auto;
+}
+
+.payload {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: .79rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+  margin-top: 1rem;
+}
+
+.secondary-action {
+  color: var(--blue);
+  background: #e8f0f6;
+}
+
+.info {
+  margin-top: 1rem;
+  padding: 0 1.2rem;
+  border-radius: .85rem;
+  box-shadow: none;
+}
+
+.info summary {
+  padding: 1rem 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.info p {
+  margin: -.2rem 0 1.1rem;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.55;
+}
+
+[hidden] { display: none !important; }
+
+@media (min-width: 38rem) {
+  .app-shell { padding-inline: 1.5rem; }
+  .date-row { grid-template-columns: 1fr auto; }
+  #generate { min-width: 12rem; }
+  .input-panel, .result { padding: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .result:not([hidden]) { animation: reveal .24s ease-out; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(.35rem); }
+  }
+}

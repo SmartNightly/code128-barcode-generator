@@ -1,0 +1,17 @@
+{
+  "name": "Barcode aus Datum",
+  "short_name": "Barcode",
+  "description": "Erzeugt einen Code-128-Barcode aus einem Altersdatum.",
+  "lang": "de",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eaf0f4",
+  "theme_color": "#143c63",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

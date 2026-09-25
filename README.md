@@ -4,6 +4,21 @@ Dieses kleine, abhängigkeitsfreie Python-Projekt erzeugt aus einem bekannten
 31-stelligen Datenformat einen 32-stelligen Payload mit Luhn-Prüfziffer und
 rendert ihn als Code-128-C-Barcode im SVG-Format.
 
+Eine installierbare Web-App für iPhone und andere Geräte befindet sich im
+Ordner `docs`. Sie führt dieselbe Berechnung vollständig lokal im Browser aus,
+erzeugt den Barcode und bietet Teilen sowie SVG-Download an.
+
+## Web-App auf dem iPhone
+
+Die veröffentlichte App ist unter folgender Adresse erreichbar:
+
+<https://smartnightly.github.io/code128-barcode-generator/>
+
+In Safari kann sie über **Teilen → Zum Home-Bildschirm → Als Web-App öffnen**
+installiert werden. Nach dem ersten vollständigen Laden funktioniert sie auch
+offline. Berechnung und Barcode-Erzeugung finden ausschließlich auf dem Gerät
+statt; das eingegebene Datum wird nicht an einen Server gesendet.
+
 > **Forschungshinweis:** Die Bedeutung von Produkt/Typ und des letzten
 > 17-stelligen Feldes ist nicht bestätigt. Das Tool bildet ausschließlich die
 > beobachtete Struktur ab und trifft keine Aussage über deren fachliche
@@ -135,6 +150,7 @@ generate-barcode-from-date
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
+node --test tests/test_web_app.mjs
 ```
 
 Die Tests prüfen unter anderem ein unabhängiges bekanntes Luhn-Beispiel, beide

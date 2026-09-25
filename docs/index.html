@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#143c63">
+  <meta name="description" content="Erzeugt einen Code-128-Barcode aus einem Altersdatum – direkt im Browser.">
+  <title>Barcode aus Datum</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div>
+        <h1>Barcode aus Datum</h1>
+        <p>181 Tage zurückrechnen und als Code 128 ausgeben.</p>
+      </div>
+    </header>
+
+    <section class="input-panel" aria-labelledby="date-heading">
+      <label id="date-heading" for="age-date">Altersdatum</label>
+      <div class="date-row">
+        <input id="age-date" type="date" required autocomplete="off">
+        <button id="generate" type="button">Barcode erzeugen</button>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+
+    <section id="result" class="result" aria-live="polite" hidden>
+      <div class="result-heading">
+        <div>
+          <span class="result-label">Produktionsdatum</span>
+          <strong id="production-date"></strong>
+        </div>
+        <div>
+          <span class="result-label">Produktionstag</span>
+          <strong id="production-day"></strong>
+        </div>
+      </div>
+
+      <div id="barcode" class="barcode" aria-label="Erzeugter Code-128-Barcode"></div>
+      <output id="payload" class="payload"></output>
+
+      <div class="actions">
+        <button id="share" class="primary-action" type="button">Teilen</button>
+        <button id="download" class="secondary-action" type="button">SVG sichern</button>
+      </div>
+    </section>
+
+    <details class="info">
+      <summary>So wird gerechnet</summary>
+      <p>Vom eingegebenen Datum werden 181 Tage abgezogen. Das Ergebnis wird als zweistelliges Jahr plus dreistelliger Tag des Jahres codiert. Die letzte Stelle des Payloads ist die neu berechnete Luhn-Prüfziffer.</p>
+    </details>
+  </main>
+
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
