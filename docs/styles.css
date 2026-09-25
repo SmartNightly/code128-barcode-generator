@@ -194,9 +194,10 @@ summary:focus-visible {
 .result-heading strong { font-size: 1.05rem; }
 
 .barcode {
-  margin: 1rem -.35rem .7rem;
-  padding: 1rem .35rem .7rem;
-  overflow-x: auto;
+  width: 100%;
+  margin: 1rem 0 .7rem;
+  padding: 1rem 0 .7rem;
+  overflow: hidden;
   background: white;
   border-radius: .45rem;
 }
@@ -204,7 +205,8 @@ summary:focus-visible {
 .barcode svg {
   display: block;
   width: 100%;
-  min-width: 32rem;
+  min-width: 0;
+  max-width: 100%;
   height: auto;
 }
 

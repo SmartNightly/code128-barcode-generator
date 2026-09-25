@@ -52,3 +52,10 @@ test("loads fresh web assets before using the offline cache", async () => {
   assert.match(serviceWorker, /networkFirst\(event\.request\)/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-cache" \}\)/);
 });
+
+test("scales the complete barcode into the mobile result card", async () => {
+  const css = await readFile(new URL("../docs/styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.barcode\s*\{[^}]*width:\s*100%[^}]*overflow:\s*hidden/s);
+  assert.match(css, /\.barcode svg\s*\{[^}]*width:\s*100%[^}]*min-width:\s*0[^}]*max-width:\s*100%/s);
+  assert.doesNotMatch(css, /\.barcode svg\s*\{[^}]*min-width:\s*32rem/s);
+});

@@ -1,5 +1,5 @@
-const CACHE = "barcode-app-v4";
-const ASSETS = ["./?v=4", "index.html", "styles.css?v=4", "app.mjs?v=4", "manifest.webmanifest", "icon.svg", "apple-touch-icon.png"];
+const CACHE = "barcode-app-v5";
+const ASSETS = ["./?v=5", "index.html", "styles.css?v=5", "app.mjs?v=5", "manifest.webmanifest", "icon.svg", "apple-touch-icon.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
