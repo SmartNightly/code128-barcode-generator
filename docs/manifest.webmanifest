@@ -1,7 +1,7 @@
 {
   "name": "Barcode aus Datum",
   "short_name": "Barcode",
-  "description": "Erzeugt einen Code-128-Barcode aus einem Altersdatum.",
+  "description": "Erzeugt einen Code-128-Barcode aus einem Ablaufdatum.",
   "lang": "de",
   "start_url": "./",
   "display": "standalone",
