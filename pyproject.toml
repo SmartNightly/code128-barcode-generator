@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code128-barcode-generator"
+version = "1.0.0"
+description = "Generate a structured 32-digit payload and render it as Code 128"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Dominic Erni" }]
+dependencies = []
+
+[project.scripts]
+generate-barcode = "barcode_generator.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
