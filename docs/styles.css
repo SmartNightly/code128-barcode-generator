@@ -96,10 +96,18 @@ button { -webkit-tap-highlight-color: transparent; }
   font-weight: 700;
 }
 
-.date-row { display: grid; gap: .7rem; }
+.date-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: .7rem;
+}
 
 input[type="date"] {
+  display: block;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 3.25rem;
   padding: .65rem .8rem;
   border: 1.5px solid var(--line);
@@ -226,7 +234,7 @@ summary:focus-visible {
 
 @media (min-width: 38rem) {
   .app-shell { padding-inline: 1.5rem; }
-  .date-row { grid-template-columns: 1fr auto; }
+  .date-row { grid-template-columns: minmax(0, 1fr) auto; }
   #generate { min-width: 12rem; }
   .input-panel, .result { padding: 1.5rem; }
 }

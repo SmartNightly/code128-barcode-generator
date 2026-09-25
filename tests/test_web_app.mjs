@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
@@ -37,4 +38,10 @@ test("encodes the Code 128 checksum and a complete SVG", () => {
   assert.match(svg, /^<svg/);
   assert.match(svg, new RegExp(payload));
   assert.match(svg, /<rect/);
+});
+
+test("keeps the native date field inside its mobile grid", async () => {
+  const css = await readFile(new URL("../docs/styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.date-row\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(css, /input\[type="date"\]\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/s);
 });

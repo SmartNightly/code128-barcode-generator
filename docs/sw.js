@@ -1,4 +1,4 @@
-const CACHE = "barcode-app-v2";
+const CACHE = "barcode-app-v3";
 const ASSETS = ["./", "index.html", "styles.css", "app.mjs", "manifest.webmanifest", "icon.svg", "apple-touch-icon.png"];
 
 self.addEventListener("install", (event) => {
