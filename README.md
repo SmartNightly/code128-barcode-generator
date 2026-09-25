@@ -96,6 +96,7 @@ Produktionsdatum: 2025-11-07 (-181 Tage)
 Produktionstag: 25311
 Payload: 22972253110181555555555668822555
 Code-128-Barcode gespeichert: barcode.svg
+Klickbare HTML-Seite: file:///…/barcode.html
 ```
 
 Im Beispiel ergibt `2026-05-07` minus 181 Tage das Produktionsdatum
@@ -103,6 +104,12 @@ Im Beispiel ergibt `2026-05-07` minus 181 Tage das Produktionsdatum
 Jahres plus der dreistellige Tag des Jahres. Der 7. November ist der 311. Tag
 des Jahres, daher lautet das Feld `25311`. Schaltjahre und Jahreswechsel werden
 automatisch berücksichtigt.
+
+Zusätzlich zum SVG erzeugt das Skript eine gleichnamige HTML-Datei. Sie enthält
+eine Barcode-Vorschau sowie klickbare Links zum Öffnen und Herunterladen der
+SVG-Datei. Die ausgegebene absolute `file://`-Adresse ist in unterstützten
+Terminals direkt anklickbar; andernfalls kann `barcode.html` im Browser geöffnet
+werden.
 
 Das Datum kann auch direkt übergeben und ein anderer Dateiname gewählt werden:
 

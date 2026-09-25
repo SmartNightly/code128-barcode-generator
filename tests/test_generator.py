@@ -8,6 +8,7 @@ from barcode_generator.date_cli import (
     date_to_production_day,
     encode_production_day,
     parse_date,
+    write_html_preview,
 )
 from barcode_generator.generator import (
     build_payload,
@@ -47,6 +48,16 @@ class DateTests(unittest.TestCase):
     def test_negative_age_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "must not be negative"):
             calculate_production_date(date(2026, 5, 7), -1)
+
+    def test_html_preview_links_to_svg(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            svg = Path(directory) / "barcode mit leerzeichen.svg"
+            svg.write_text("<svg/>", encoding="utf-8")
+            html = write_html_preview(svg, "12345")
+            document = html.read_text(encoding="utf-8")
+        self.assertEqual(html.name, "barcode mit leerzeichen.html")
+        self.assertIn('href="barcode%20mit%20leerzeichen.svg"', document)
+        self.assertIn("12345", document)
 
     def test_invalid_calendar_date_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):

@@ -2,6 +2,9 @@
 
 import argparse
 from datetime import date, timedelta
+from html import escape
+from pathlib import Path
+from urllib.parse import quote
 
 from .generator import build_payload, render_code128_svg
 
@@ -34,6 +37,34 @@ def date_to_production_day(age_date: date, age_days: int = AGE_DAYS) -> str:
     return encode_production_day(calculate_production_date(age_date, age_days))
 
 
+def write_html_preview(svg_path: str | Path, payload: str) -> Path:
+    """Create an HTML page containing a clickable link and SVG preview."""
+    svg = Path(svg_path).resolve()
+    html_path = svg.with_suffix(".html")
+    svg_name = svg.name
+    encoded_href = quote(svg_name)
+    document = f"""<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code-128-Barcode</title>
+</head>
+<body>
+  <h1>Code-128-Barcode</h1>
+  <p><a href="{encoded_href}" target="_blank">SVG-Barcode öffnen</a></p>
+  <p><a href="{encoded_href}" download>SVG-Barcode herunterladen</a></p>
+  <a href="{encoded_href}" target="_blank">
+    <img src="{encoded_href}" alt="Code-128-Barcode {escape(payload)}">
+  </a>
+  <p><code>{escape(payload)}</code></p>
+</body>
+</html>
+"""
+    html_path.write_text(document, encoding="utf-8")
+    return html_path
+
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Generate the Code 128 barcode by subtracting 181 age days from a calendar date."
@@ -61,6 +92,7 @@ def main() -> None:
         production_day = encode_production_day(production_date)
         payload = build_payload(production_day)
         output = render_code128_svg(payload, args.output)
+        html_output = write_html_preview(output, payload)
     except ValueError as error:
         raise SystemExit(f"Fehler: {error}") from error
 
@@ -68,6 +100,7 @@ def main() -> None:
     print(f"Produktionstag: {production_day}")
     print(f"Payload: {payload}")
     print(f"Code-128-Barcode gespeichert: {output}")
+    print(f"Klickbare HTML-Seite: {html_output.as_uri()}")
 
 
 if __name__ == "__main__":
