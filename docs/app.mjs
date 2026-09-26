@@ -125,6 +125,17 @@ function formatGermanDate(isoDate) {
   return new Intl.DateTimeFormat("de-CH", { dateStyle: "medium", timeZone: "UTC" }).format(parseIsoDate(isoDate));
 }
 
+export function calculateExpirationDate(productionDate, payload) {
+  const expiration = parseIsoDate(productionDate);
+  expiration.setUTCDate(expiration.getUTCDate() + Number(payload.slice(10, 14)));
+  return expiration.toISOString().slice(0, 10);
+}
+
+export function readAutoCameraPreference(storage) {
+  try { return storage.getItem('barcode.autoCamera') !== 'false'; }
+  catch { return true; }
+}
+
 function downloadSvg(svg, filename) {
   const link = document.createElement("a");
   link.href = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
@@ -141,6 +152,11 @@ function initialize() {
   const shareButton = document.querySelector("#share");
   const downloadButton = document.querySelector("#download");
   let current = null;
+
+  const autoCamera = document.querySelector('#auto-camera');
+  let storage;
+  try { storage = window.localStorage; } catch { /* Storage can be unavailable in private contexts. */ }
+  autoCamera.checked = readAutoCameraPreference(storage);
 
   const video = document.querySelector('#camera');
   const scanStatus = document.querySelector('#scan-status');
@@ -164,6 +180,7 @@ function initialize() {
     current = data;
     current.svg = buildCode128Svg(current.payload);
     document.querySelector('#production-date').textContent = formatGermanDate(current.productionDate);
+    document.querySelector('#expiration-date').textContent = formatGermanDate(calculateExpirationDate(current.productionDate, current.payload));
     document.querySelector('#production-day').textContent = current.productionDay;
     document.querySelector('#barcode').innerHTML = current.svg;
     document.querySelector('#payload').textContent = current.payload;
@@ -211,10 +228,21 @@ function initialize() {
     }
   }
   startButton.addEventListener('click', startCamera);
+  autoCamera.addEventListener('change', () => {
+    try { storage.setItem('barcode.autoCamera', String(autoCamera.checked)); }
+    catch { scanStatus.textContent = 'Einstellung gilt für diese Sitzung. Speichern ist im Browser nicht verfügbar.'; }
+    if (!autoCamera.checked) {
+      stopCamera();
+      scanStatus.textContent = 'Automatischer Kamerastart aus. Bei Bedarf „Kamera starten“ antippen.';
+    } else { startCamera(); }
+  });
   stopButton.addEventListener('click', () => { stopCamera(); scanStatus.textContent = 'Kamera angehalten.'; });
   window.addEventListener('pagehide', stopCamera);
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopCamera(); });
-  window.addEventListener('pageshow', () => { if (!current && !controls) startCamera(); });
+  window.addEventListener('pageshow', () => {
+    if (autoCamera.checked && !current && !controls) startCamera();
+    else if (!autoCamera.checked) scanStatus.textContent = 'Bei Bedarf „Kamera starten“ antippen.';
+  });
 
   const generate = () => {
     try {

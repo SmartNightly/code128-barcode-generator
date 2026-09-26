@@ -9,7 +9,24 @@ import {
   code128Values,
   parseIsoDate,
   advanceScannedBarcode,
+  calculateExpirationDate,
+  readAutoCameraPreference,
 } from "../docs/app.mjs";
+
+test('expiration date follows encoded age and manual date round-trips', () => {
+  const manual = calculateBarcodeData('2026-05-07');
+  assert.equal(calculateExpirationDate(manual.productionDate, manual.payload), '2026-05-07');
+  const shifted = advanceScannedBarcode(manual.payload);
+  assert.equal(calculateExpirationDate(shifted.productionDate, shifted.payload), '2026-06-06');
+  assert.equal(calculateExpirationDate('2024-02-28', scanned('24059', '000255555555566882255')), '2024-03-01');
+});
+
+test('automatic camera preference defaults on and restores stored off', () => {
+  assert.equal(readAutoCameraPreference({ getItem: () => null }), true);
+  assert.equal(readAutoCameraPreference({ getItem: () => 'false' }), false);
+  assert.equal(readAutoCameraPreference({ getItem: () => 'true' }), true);
+  assert.equal(readAutoCameraPreference(undefined), true);
+});
 
 function scanned(day, fields = '018155555555566882255') {
   const base = '22972' + day + fields;

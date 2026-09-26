@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
   <main class="app-shell">
@@ -23,6 +23,10 @@
 
     <section class="input-panel scanner" aria-labelledby="scan-heading">
       <h2 id="scan-heading">Barcode scannen</h2>
+      <label class="camera-setting" for="auto-camera">
+        <span>Kamera automatisch starten</span>
+        <input id="auto-camera" type="checkbox" role="switch" checked>
+      </label>
       <video id="camera" autoplay muted playsinline hidden aria-label="Kameravorschau zum Barcode-Scan"></video>
       <p id="scan-status" role="status">Kamera wird gestartet …</p>
       <div class="actions">
@@ -42,20 +46,21 @@
     </details>
 
     <section id="result" class="result" aria-live="polite" hidden>
+      <div id="barcode" class="barcode" aria-label="Erzeugter Code-128-Barcode"></div>
+      <output id="payload" class="payload"></output>
       <p id="date-change" hidden></p>
       <div class="result-heading">
         <div>
           <span class="result-label">Produktionsdatum</span>
           <strong id="production-date"></strong>
+          <span class="result-label expiration-label">Neues Ablaufdatum</span>
+          <strong id="expiration-date"></strong>
         </div>
         <div>
           <span class="result-label">Produktionstag</span>
           <strong id="production-day"></strong>
         </div>
       </div>
-
-      <div id="barcode" class="barcode" aria-label="Erzeugter Code-128-Barcode"></div>
-      <output id="payload" class="payload"></output>
 
       <div class="actions">
         <button id="share" class="primary-action" type="button">Teilen</button>
@@ -69,6 +74,6 @@
     </details>
   </main>
 
-  <script type="module" src="app.mjs?v=6"></script>
+  <script type="module" src="app.mjs?v=7"></script>
 </body>
 </html>

@@ -19,6 +19,13 @@ als 2000–2099 interpretiert; ungültige Daten und Prüfziffern werden zurückg
 Nach dem Treffer wird die Kamera beendet. „Nächsten Barcode scannen“ startet sie
 erneut. Die manuelle Ablaufdatum-Eingabe bleibt als aufklappbare Alternative erhalten.
 
+„Kamera automatisch starten“ ist standardmäßig eingeschaltet und wird lokal pro
+Browser/Gerät gespeichert. Auch bei ausgeschalteter Automatik lässt sich die Kamera
+manuell starten. Unter dem Produktionsdatum steht das neue Ablaufdatum:
+Produktionsdatum plus das im Barcode codierte Alter (Stellen 11–14, normalerweise
+181 Tage). Der neue Barcode steht oberhalb dieser Angaben. Die Kameravorschau
+nutzt die volle Rahmenbreite mit dem ursprünglichen Seitenverhältnis.
+
 Der Scanner nutzt lokal mitgeliefertes ZXing; Kamerabilder verlassen das Gerät nicht.
 Scanner-Bundle reproduzieren: `npm ci && npm run build:scanner`.
 JavaScript-Tests: `npm test`. Die Lizenzhinweise liegen unter `docs/vendor-licenses`.
