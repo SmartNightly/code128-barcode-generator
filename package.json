@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"build:scanner":"esbuild web/scanner.mjs --bundle --minify --format=esm --outfile=docs/scanner.mjs","test":"node --test tests/test_web_app.mjs"},"dependencies":{"@zxing/browser":"0.1.5","@zxing/library":"0.21.3"},"devDependencies":{"esbuild":"0.25.10"}}

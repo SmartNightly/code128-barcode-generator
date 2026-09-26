@@ -73,6 +73,32 @@ export function code128Values(payload) {
   return [105, ...data, checksum, 106];
 }
 
+export function advanceScannedBarcode(payload) {
+  if (!/^\d{32}$/.test(payload)) throw new Error("Bitte einen 32-stelligen Code-128-Barcode scannen.");
+  if (calculateLuhnCheckDigit(payload.slice(0, 31)) !== payload[31]) {
+    throw new Error("Die Prüfziffer stimmt nicht. Bitte erneut scannen.");
+  }
+  // The two-digit year is interpreted within 2000–2099.
+  const year = 2000 + Number(payload.slice(5, 7));
+  const day = Number(payload.slice(7, 10));
+  const original = new Date(Date.UTC(year, 0, day));
+  if (day < 1 || original.getUTCFullYear() !== year) {
+    throw new Error("Der Barcode enthält einen ungültigen Produktionstag.");
+  }
+  const shifted = new Date(original);
+  shifted.setUTCDate(shifted.getUTCDate() + 30);
+  if (shifted.getUTCFullYear() > 2099) throw new Error("Das neue Datum liegt außerhalb von 2000–2099.");
+  const dayOfYear = Math.round((shifted - Date.UTC(shifted.getUTCFullYear(), 0, 1)) / 86400000) + 1;
+  const productionDay = `${String(shifted.getUTCFullYear() % 100).padStart(2, '0')}${String(dayOfYear).padStart(3, '0')}`;
+  const base = payload.slice(0, 5) + productionDay + payload.slice(10, 31);
+  return {
+    originalDate: original.toISOString().slice(0, 10),
+    productionDate: shifted.toISOString().slice(0, 10),
+    productionDay,
+    payload: base + calculateLuhnCheckDigit(base),
+  };
+}
+
 export function buildCode128Svg(payload) {
   const moduleWidth = 2;
   const quietZone = 20;
@@ -116,16 +142,85 @@ function initialize() {
   const downloadButton = document.querySelector("#download");
   let current = null;
 
+  const video = document.querySelector('#camera');
+  const scanStatus = document.querySelector('#scan-status');
+  const startButton = document.querySelector('#start-camera');
+  const stopButton = document.querySelector('#stop-camera');
+  let controls;
+  let session = 0;
+
+  function stopCamera() {
+    session++;
+    controls?.stop();
+    controls = null;
+    video.srcObject?.getTracks().forEach(track => track.stop());
+    video.srcObject = null;
+    video.hidden = true;
+    startButton.disabled = false;
+    stopButton.hidden = true;
+  }
+
+  function showResult(data) {
+    current = data;
+    current.svg = buildCode128Svg(current.payload);
+    document.querySelector('#production-date').textContent = formatGermanDate(current.productionDate);
+    document.querySelector('#production-day').textContent = current.productionDay;
+    document.querySelector('#barcode').innerHTML = current.svg;
+    document.querySelector('#payload').textContent = current.payload;
+    const change = document.querySelector('#date-change');
+    change.textContent = data.originalDate ? `${formatGermanDate(data.originalDate)} → ${formatGermanDate(data.productionDate)} (+30 Tage)` : '';
+    change.hidden = !data.originalDate;
+    result.hidden = false;
+    error.hidden = true;
+  }
+
+  async function startCamera() {
+    stopCamera();
+    const activeSession = session;
+    startButton.disabled = true;
+    stopButton.hidden = false;
+    scanStatus.textContent = 'Kamera wird gestartet …';
+    try {
+      const { createScanner } = await import('./scanner.mjs');
+      if (session !== activeSession) return;
+      video.hidden = false;
+      const opened = await createScanner().decodeFromConstraints({audio: false, video: {
+        facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 },
+      }}, video, (decoded, failure, scanControls) => {
+        if (session !== activeSession) { scanControls.stop(); return; }
+        if (!decoded) return;
+        try {
+          const data = advanceScannedBarcode(decoded.getText());
+          scanControls.stop();
+          stopCamera();
+          showResult(data);
+          scanStatus.textContent = 'Erkannt. Neuer Barcode mit Produktionsdatum +30 Tage erstellt.';
+          startButton.textContent = 'Nächsten Barcode scannen';
+          result.scrollIntoView({block: 'nearest'});
+        } catch (problem) { scanStatus.textContent = problem.message; }
+      });
+      if (session !== activeSession) { opened.stop(); return; }
+      controls = opened;
+      scanStatus.textContent = 'Den vollständigen Barcode ruhig vor die Rückkamera halten.';
+    } catch (problem) {
+      if (session !== activeSession) return;
+      stopCamera();
+      scanStatus.textContent = problem.name === 'NotAllowedError'
+        ? 'Bitte Kamerazugriff in Safari erlauben und „Kamera starten“ antippen.'
+        : 'Kamera konnte nicht starten. Bitte „Kamera starten“ antippen oder das Datum manuell eingeben.';
+    }
+  }
+  startButton.addEventListener('click', startCamera);
+  stopButton.addEventListener('click', () => { stopCamera(); scanStatus.textContent = 'Kamera angehalten.'; });
+  window.addEventListener('pagehide', stopCamera);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopCamera(); });
+  window.addEventListener('pageshow', () => { if (!current && !controls) startCamera(); });
+
   const generate = () => {
     try {
-      current = calculateBarcodeData(dateInput.value);
-      current.svg = buildCode128Svg(current.payload);
-      document.querySelector("#production-date").textContent = formatGermanDate(current.productionDate);
-      document.querySelector("#production-day").textContent = current.productionDay;
-      document.querySelector("#barcode").innerHTML = current.svg;
-      document.querySelector("#payload").textContent = current.payload;
-      error.hidden = true;
-      result.hidden = false;
+      const data = calculateBarcodeData(dateInput.value);
+      stopCamera();
+      showResult(data);
     } catch (problem) {
       error.textContent = problem.message;
       error.hidden = false;

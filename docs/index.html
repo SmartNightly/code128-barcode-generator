@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <main class="app-shell">
@@ -17,20 +17,32 @@
       <div class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div>
         <h1>Barcode aus Datum</h1>
-        <p>181 Tage zurückrechnen und als Code 128 ausgeben.</p>
+        <p>Barcode scannen. Produktionsdatum um 30 Tage erhöhen.</p>
       </div>
     </header>
 
-    <section class="input-panel" aria-labelledby="date-heading">
+    <section class="input-panel scanner" aria-labelledby="scan-heading">
+      <h2 id="scan-heading">Barcode scannen</h2>
+      <video id="camera" autoplay muted playsinline hidden aria-label="Kameravorschau zum Barcode-Scan"></video>
+      <p id="scan-status" role="status">Kamera wird gestartet …</p>
+      <div class="actions">
+        <button id="start-camera" class="primary-action" type="button">Kamera starten</button>
+        <button id="stop-camera" class="secondary-action" type="button" hidden>Kamera stoppen</button>
+      </div>
+    </section>
+
+    <details class="info">
+      <summary>Datum manuell eingeben</summary>
       <label id="date-heading" for="age-date">Ablaufdatum</label>
       <div class="date-row">
         <input id="age-date" type="date" required autocomplete="off">
         <button id="generate" type="button">Barcode erzeugen</button>
       </div>
       <p id="error" class="error" role="alert" hidden></p>
-    </section>
+    </details>
 
     <section id="result" class="result" aria-live="polite" hidden>
+      <p id="date-change" hidden></p>
       <div class="result-heading">
         <div>
           <span class="result-label">Produktionsdatum</span>
@@ -53,10 +65,10 @@
 
     <details class="info">
       <summary>So wird gerechnet</summary>
-      <p>Vom eingegebenen Datum werden 181 Tage abgezogen. Das Ergebnis wird als zweistelliges Jahr plus dreistelliger Tag des Jahres codiert. Die letzte Stelle des Payloads ist die neu berechnete Luhn-Prüfziffer.</p>
+      <p>Beim Scannen wird das Produktionsdatum im Barcode um 30 Tage erhöht. Alle anderen Datenfelder bleiben erhalten; die Luhn-Prüfziffer wird neu berechnet. Zweistellige Jahreszahlen werden als 2000–2099 gelesen. Bei manueller Eingabe werden vom Ablaufdatum wie bisher 181 Tage abgezogen. Kamerabilder werden nur auf deinem Gerät verarbeitet.</p>
     </details>
   </main>
 
-  <script type="module" src="app.mjs?v=5"></script>
+  <script type="module" src="app.mjs?v=6"></script>
 </body>
 </html>

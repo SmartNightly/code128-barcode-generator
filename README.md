@@ -10,6 +10,19 @@ erzeugt den Barcode und bietet Teilen sowie SVG-Download an.
 
 ## Web-App auf dem iPhone
 
+Beim Öffnen startet die Rückkamera (beim ersten Mal den Kamerazugriff erlauben).
+Falls Safari den automatischen Start blockiert, „Kamera starten“ antippen.
+Ein gültiger 32-stelliger Code-128-Scan wird automatisch übernommen: Produktionstag
+an Stellen 6–10 als `JJTTT` auslesen, 30 Kalendertage addieren und die Luhn-Ziffer
+neu berechnen. Alle anderen Datenfelder bleiben unverändert. Jahreszahlen werden
+als 2000–2099 interpretiert; ungültige Daten und Prüfziffern werden zurückgewiesen.
+Nach dem Treffer wird die Kamera beendet. „Nächsten Barcode scannen“ startet sie
+erneut. Die manuelle Ablaufdatum-Eingabe bleibt als aufklappbare Alternative erhalten.
+
+Der Scanner nutzt lokal mitgeliefertes ZXing; Kamerabilder verlassen das Gerät nicht.
+Scanner-Bundle reproduzieren: `npm ci && npm run build:scanner`.
+JavaScript-Tests: `npm test`. Die Lizenzhinweise liegen unter `docs/vendor-licenses`.
+
 Die veröffentlichte App ist unter folgender Adresse erreichbar:
 
 <https://smartnightly.github.io/code128-barcode-generator/>

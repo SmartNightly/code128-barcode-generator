@@ -8,7 +8,51 @@ import {
   calculateLuhnCheckDigit,
   code128Values,
   parseIsoDate,
+  advanceScannedBarcode,
 } from "../docs/app.mjs";
+
+function scanned(day, fields = '018155555555566882255') {
+  const base = '22972' + day + fields;
+  return base + calculateLuhnCheckDigit(base);
+}
+
+test('scan advances production by 30 days and preserves other fields', () => {
+  const original = scanned('26127');
+  const result = advanceScannedBarcode(original);
+  assert.equal(result.originalDate, '2026-05-07');
+  assert.equal(result.productionDate, '2026-06-06');
+  assert.equal(result.productionDay, '26157');
+  assert.equal(result.payload.slice(10, 31), original.slice(10, 31));
+  assert.equal(result.payload[31], calculateLuhnCheckDigit(result.payload.slice(0, 31)));
+});
+
+test('scan handles year rollover and leap day', () => {
+  assert.equal(advanceScannedBarcode(scanned('25365')).productionDate, '2026-01-30');
+  assert.equal(advanceScannedBarcode(scanned('24031')).productionDate, '2024-03-01');
+  assert.equal(advanceScannedBarcode(scanned('26031')).productionDate, '2026-03-02');
+});
+
+test('scan rejects invalid dates, bad checksums and unsupported input', () => {
+  assert.throws(() => advanceScannedBarcode(scanned('26366')), /ungültigen/);
+  assert.throws(() => advanceScannedBarcode(scanned('26000')), /ungültigen/);
+  assert.throws(() => advanceScannedBarcode(scanned('99365')), /außerhalb/);
+  assert.throws(() => advanceScannedBarcode('123'), /32-stelligen/);
+  const valid = scanned('26127');
+  assert.throws(() => advanceScannedBarcode(valid.slice(0, 31) + ((Number(valid[31]) + 1) % 10)), /Prüfziffer/);
+});
+
+test('ZXing decodes the generated Code 128 bars back to the shifted payload', async () => {
+  const { BinaryBitmap, HybridBinarizer, RGBLuminanceSource, MultiFormatReader } = await import('@zxing/library');
+  const payload = advanceScannedBarcode(scanned('26127')).payload;
+  const svg = buildCode128Svg(payload);
+  const width = 462, height = 126;
+  const pixels = new Uint8ClampedArray(width * height).fill(255);
+  for (const match of svg.matchAll(/<rect x="(\d+)" y="0" width="(\d+)" height="86"/g)) {
+    for (let y = 20; y < 106; y++) pixels.fill(0, y * width + Number(match[1]), y * width + Number(match[1]) + Number(match[2]));
+  }
+  const bitmap = new BinaryBitmap(new HybridBinarizer(new RGBLuminanceSource(pixels, width, height)));
+  assert.equal(new MultiFormatReader().decode(bitmap).getText(), payload);
+});
 
 test("calculates the independent Luhn reference", () => {
   assert.equal(calculateLuhnCheckDigit("7992739871"), "3");
