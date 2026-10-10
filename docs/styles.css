@@ -1,15 +1,17 @@
 :root {
+  /* Erscheinungsbild vet4horse: Braun #771900, Beige #f3e8bb, Blau #00b7ed; Schrift Strada OT, ersatzweise Systemschrift.
+     Die Variablen --blue und --blue-strong behalten ihren Namen und tragen jetzt die Hauptfarbe Braun. */
   color-scheme: light;
-  --ink: #102638;
-  --muted: #587083;
-  --blue: #143c63;
-  --blue-strong: #0c2c4b;
-  --paper: #ffffff;
-  --ground: #eaf0f4;
-  --line: #c7d3dc;
-  --signal: #e9b949;
+  --ink: #2a1d17;
+  --muted: #6b5a52;
+  --blue: #771900;
+  --blue-strong: #5a1300;
+  --paper: #fffdf7;
+  --ground: #fbf8ee;
+  --line: #e6dcb8;
+  --signal: #00b7ed;
   --error: #a52a2a;
-  font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", system-ui, sans-serif;
+  font-family: "Strada OT", "Strada", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -52,7 +54,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-header p {
   max-width: 32rem;
   margin: 0;
-  color: #d9e6ef;
+  color: #f3e8bb;
   font-size: .98rem;
   line-height: 1.35;
 }
@@ -80,8 +82,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .result,
 .info {
   background: var(--paper);
-  border: 1px solid rgb(16 38 56 / 8%);
-  box-shadow: 0 .9rem 2.5rem rgb(25 55 77 / 10%);
+  border: 1px solid rgb(119 25 0 / 12%);
+  box-shadow: 0 .9rem 2.5rem rgb(119 25 0 / 10%);
 }
 
 .input-panel {
@@ -98,9 +100,9 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 .scanner h2 { margin: 0 0 .8rem; font-size: 1.2rem; }
-#camera { display: block; width: 100%; max-width: 100%; height: auto; background: #102638; border-radius: .65rem; }
+#camera { display: block; width: 100%; max-width: 100%; height: auto; background: #2a1d17; border-radius: .65rem; }
 .input-panel .camera-setting { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; margin-bottom: .8rem; }
-.camera-setting input { appearance: none; -webkit-appearance: none; width: 48px; height: 28px; flex: 0 0 48px; margin: 0; padding: 3px; border-radius: 20px; background: #587083; cursor: pointer; }
+.camera-setting input { appearance: none; -webkit-appearance: none; width: 48px; height: 28px; flex: 0 0 48px; margin: 0; padding: 3px; border-radius: 20px; background: #b7ab8f; cursor: pointer; }
 .camera-setting input::before { content: ''; display: block; width: 22px; height: 22px; border-radius: 50%; background: white; }
 .camera-setting input:checked { background: var(--blue); }
 .camera-setting input:checked::before { transform: translateX(20px); }
@@ -132,7 +134,7 @@ input[type="date"] {
   border: 1.5px solid var(--line);
   border-radius: .65rem;
   color: var(--ink);
-  background: #f9fbfc;
+  background: #fffdf7;
   font-size: 1.05rem;
 }
 
@@ -241,7 +243,7 @@ summary:focus-visible {
 
 .secondary-action {
   color: var(--blue);
-  background: #e8f0f6;
+  background: #f3e8bb;
 }
 
 .info {
